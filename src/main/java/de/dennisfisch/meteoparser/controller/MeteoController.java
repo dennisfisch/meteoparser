@@ -4,6 +4,7 @@ import de.dennisfisch.meteoparser.model.Forecast;
 import de.dennisfisch.meteoparser.service.MeteoService;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class MeteoController {
 
   @GetMapping("/forecast")
   @ResponseBody
-  public ResponseEntity<Forecast> provideForecast() throws IOException {
+  public ResponseEntity<List<Forecast>> provideForecast() throws IOException {
     return ResponseEntity.ok(meteoService.provideForecast(meteoUrl));
   }
 

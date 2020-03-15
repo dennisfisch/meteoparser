@@ -9,18 +9,44 @@
     <version>2.2.5.RELEASE</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
+
   <groupId>de.dennisfisch</groupId>
   <artifactId>meteoparser</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>meteoparser</name>
-  <description>Demo project for Spring Boot</description>
+  <version>0.0.1</version>
+  <name>MeteoParser</name>
+  <description>Parses the 4-Day Weather Forecast images provided by http://wetterstationen.meteomedia.de/map=Deutschland</description>
+
+  <licenses>
+    <license>
+      <name>Apache License 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>MeteoParser</name>
+    <url>https://github.com/dennisfisch/meteoparser</url>
+  </organization>
+
+  <scm>
+    <connection>https://github.com/dennisfisch/meteoparser.git</connection>
+    <developerConnection>https://github.com/dennisfisch/meteoparser.git</developerConnection>
+    <url>https://github.com/dennisfisch/meteoparser</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Dennis Werner Fisch</name>
+      <email>github@dennisfisch.de</email>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
 
   <properties>
     <java.version>1.8</java.version>
     <openimaj.version>1.3.10</openimaj.version>
     <commons-io.version>2.6</commons-io.version>
-    <tess4j.version>4.5.1</tess4j.version>
-    <javacv.version>1.5.2</javacv.version>
   </properties>
 
   <dependencies>
@@ -71,18 +97,6 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>${commons-io.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>net.sourceforge.tess4j</groupId>
-      <artifactId>tess4j</artifactId>
-      <version>${tess4j.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.bytedeco</groupId>
-      <artifactId>javacv</artifactId>
-      <version>${javacv.version}</version>
     </dependency>
 
     <dependency>

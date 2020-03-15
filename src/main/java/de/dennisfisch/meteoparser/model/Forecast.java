@@ -10,14 +10,14 @@ import lombok.Getter;
 @Builder
 public class Forecast {
 
-  private final Date date;
+  private final long date;
 
-  private final Map<Integer, BigDecimal> temperatureByHour;
+  private final Map<Long, BigDecimal> temperatureByHour;
 
   private final int sunshineMinutes;
 
-  private final Map<Integer, BigDecimal> sunshineByHour;
+  private final Map<Long, BigDecimal> sunshineByHour;
 
-  private final Map<Integer, BigDecimal> precipitationByHour;
+  private final Map<Long, BigDecimal> precipitationByHour;
 
 }

@@ -14,43 +14,42 @@ import org.springframework.stereotype.Component;
 @Component
 public class SunshineParserService {
 
-  public Map<Integer, BigDecimal> parseImage(final FImage image) {
-    final Pixel initialPixel = new Pixel(183, 475);
+  public Map<Integer, BigDecimal> provideSunshineByHourOfDay(final FImage weatherImage, final Pixel initialPixel) {
 
-    final Optional<Pixel> optionalBottomLine = ImageNavigator.nearestLine(initialPixel, image, ImageNavigator::upwards);
+    final Optional<Pixel> optionalBottomLine = ImageNavigator.nearestLine(initialPixel, weatherImage, ImageNavigator::upwards);
     if (!optionalBottomLine.isPresent()) {
       return Collections.emptyMap();
     }
     final Pixel bottomLine = optionalBottomLine.get();
 
-    final Optional<Pixel> optionalSunHoursBottomLine = ImageNavigator.nearestLine(new Pixel(bottomLine.x, bottomLine.y - 1), image,ImageNavigator::upwards);
+    final Optional<Pixel> optionalSunHoursBottomLine = ImageNavigator.nearestLine(new Pixel(bottomLine.x, bottomLine.y - 1), weatherImage,ImageNavigator::upwards);
     if (!optionalSunHoursBottomLine.isPresent()) {
       return Collections.emptyMap();
     }
     final Pixel sunHoursBottomLine = optionalSunHoursBottomLine.get();
 
-    final Optional<Pixel> optionalBottomCornerLeft = ImageNavigator.nearestLine(new Pixel(sunHoursBottomLine.x, sunHoursBottomLine.y - 1), image,ImageNavigator::left);
+    final Optional<Pixel> optionalBottomCornerLeft = ImageNavigator.nearestLine(new Pixel(sunHoursBottomLine.x, sunHoursBottomLine.y - 1), weatherImage,ImageNavigator::left);
     if (!optionalBottomCornerLeft.isPresent()) {
       return Collections.emptyMap();
     }
     final Pixel leftBottomCorner = optionalBottomCornerLeft.get();
 
-    return provideSunshineMinutesByHour(image, leftBottomCorner);
+    return parseSunshineMinutesForHour(weatherImage, leftBottomCorner);
   }
 
-  private Map<Integer, BigDecimal> provideSunshineMinutesByHour(final FImage img, final Pixel leftBottomCorner) {
+  private Map<Integer, BigDecimal> parseSunshineMinutesForHour(final FImage weatherImage, final Pixel leftBottomCorner) {
     Pixel currentHourPixel = new Pixel(leftBottomCorner.x + 1, leftBottomCorner.y);
     final Map<Integer, BigDecimal> sunhourMap = new LinkedHashMap<>();
 
     for (int hour = 0; hour < 24; hour++) {
-      final Pixel firstPixelOfHour = currentHourPixel.clone();
-      firstPixelOfHour.translate(1, 0);
+      final Pixel firstPixelOfHourBar = currentHourPixel.clone();
+      firstPixelOfHourBar.translate(1, 0);
 
-      final float hourColor = img.getPixel(firstPixelOfHour);
+      final float hourColor = weatherImage.getPixel(firstPixelOfHourBar);
       if (hourColor == 0.654902f) {
-        final Optional<Pixel> optionalHourTopPixel = ImageNavigator.nearestLine(firstPixelOfHour, img,ImageNavigator::upwards);
-        final BigDecimal minutes = optionalHourTopPixel
-            .map(hourTopPixel -> provideSunshineMinutes(firstPixelOfHour.y - hourTopPixel.y))
+        final Optional<Pixel> optionalHourBarTopPixel = ImageNavigator.nearestLine(firstPixelOfHourBar, weatherImage,ImageNavigator::upwards);
+        final BigDecimal minutes = optionalHourBarTopPixel
+            .map(hourBarTopPixel -> calculateMinutesFromBarHeight(firstPixelOfHourBar.y - hourBarTopPixel.y))
             .orElse(BigDecimal.ZERO);
 
         sunhourMap.put(hour, minutes);
@@ -58,7 +57,7 @@ public class SunshineParserService {
         sunhourMap.put(hour, BigDecimal.ZERO);
       }
 
-      final Optional<Pixel> optionalNextHour = ImageNavigator.nearestLine(firstPixelOfHour, img,ImageNavigator::right);
+      final Optional<Pixel> optionalNextHour = ImageNavigator.nearestLine(firstPixelOfHourBar, weatherImage,ImageNavigator::right);
       if (!optionalNextHour.isPresent()) {
         break;
       }
@@ -69,13 +68,13 @@ public class SunshineParserService {
     return sunhourMap;
   }
 
-  private BigDecimal provideSunshineMinutes(final int pixelDifference) {
-    if (pixelDifference <= 12) {
-      return BigDecimal.valueOf(RangeMapper.mapRange(pixelDifference, 0, 11, 0, 20));
-    } else if (pixelDifference <= 23) {
-      return BigDecimal.valueOf(RangeMapper.mapRange(pixelDifference, 12, 23, 21.81818181818182, 40));
-    } else if (pixelDifference <= 34) {
-      return BigDecimal.valueOf(RangeMapper.mapRange(pixelDifference, 24, 34, 41.81818181818182, 60));
+  private BigDecimal calculateMinutesFromBarHeight(final int barHeight) {
+    if (barHeight <= 12) {
+      return BigDecimal.valueOf(RangeMapper.mapRange(barHeight, 0, 11, 0, 20));
+    } else if (barHeight <= 23) {
+      return BigDecimal.valueOf(RangeMapper.mapRange(barHeight, 12, 23, 21.81818181818182, 40));
+    } else if (barHeight <= 34) {
+      return BigDecimal.valueOf(RangeMapper.mapRange(barHeight, 24, 34, 41.81818181818182, 60));
     } else {
       return BigDecimal.ZERO;
     }
