@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MeteoService {
 
-  private static final Pixel DAY_1_INITIAL_PIXEL = new Pixel(183, 475);
+  private static final Pixel DAY_1_INITIAL_PIXEL = new Pixel(181, 407);
 
   private static final float OFFSET_BETWEEN_DAYS = 162f;
 
@@ -49,8 +49,8 @@ public class MeteoService {
       initialPixel.translate(day * OFFSET_BETWEEN_DAYS, 0);
 
       final Map<Integer, BigDecimal> sunshineMinutesByHour = sunshineParserService.provideSunshineByHourOfDay(image, initialPixel);
-
       final Map<Long, BigDecimal> sunshineMinutesByTimestamp = new LinkedHashMap<>();
+
       for (final Entry<Integer, BigDecimal> minutesByHour : sunshineMinutesByHour.entrySet()) {
         final LocalDateTime hourTimestamp = new LocalDate()
             .plusDays(day)

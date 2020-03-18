@@ -14,30 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SunshineParserService {
 
-  public Map<Integer, BigDecimal> provideSunshineByHourOfDay(final FImage weatherImage, final Pixel initialPixel) {
-
-    final Optional<Pixel> optionalBottomLine = ImageNavigator.nearestLine(initialPixel, weatherImage, ImageNavigator::upwards);
-    if (!optionalBottomLine.isPresent()) {
-      return Collections.emptyMap();
-    }
-    final Pixel bottomLine = optionalBottomLine.get();
-
-    final Optional<Pixel> optionalSunHoursBottomLine = ImageNavigator.nearestLine(new Pixel(bottomLine.x, bottomLine.y - 1), weatherImage,ImageNavigator::upwards);
-    if (!optionalSunHoursBottomLine.isPresent()) {
-      return Collections.emptyMap();
-    }
-    final Pixel sunHoursBottomLine = optionalSunHoursBottomLine.get();
-
-    final Optional<Pixel> optionalBottomCornerLeft = ImageNavigator.nearestLine(new Pixel(sunHoursBottomLine.x, sunHoursBottomLine.y - 1), weatherImage,ImageNavigator::left);
-    if (!optionalBottomCornerLeft.isPresent()) {
-      return Collections.emptyMap();
-    }
-    final Pixel leftBottomCorner = optionalBottomCornerLeft.get();
-
-    return parseSunshineMinutesForHour(weatherImage, leftBottomCorner);
-  }
-
-  private Map<Integer, BigDecimal> parseSunshineMinutesForHour(final FImage weatherImage, final Pixel leftBottomCorner) {
+  public Map<Integer, BigDecimal> provideSunshineByHourOfDay(final FImage weatherImage, final Pixel leftBottomCorner) {
     Pixel currentHourPixel = new Pixel(leftBottomCorner.x + 1, leftBottomCorner.y);
     final Map<Integer, BigDecimal> sunhourMap = new LinkedHashMap<>();
 
